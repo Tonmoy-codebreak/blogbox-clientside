@@ -1,8 +1,10 @@
 import React from "react";
 import { RxSlash } from "react-icons/rx";
 import { Link, NavLink } from "react-router";
+import { useAuth } from "../Auth/useAuth";
 
 const NavBar = () => {
+  const { user,logoutUser } = useAuth();
   const navOption = (
     <>
       <li>
@@ -14,14 +16,25 @@ const NavBar = () => {
       <li>
         <NavLink to={"/featuredblogs"}>Featured Blogs</NavLink>
       </li>
-      <li>
-        <NavLink to={"/addblogs"}>Add Blogs</NavLink>
-      </li>
-      <li>
-        <NavLink to={"/wishlist"}>Wishlist</NavLink>
-      </li>
+      {user ? (
+        <>
+          <li>
+            <NavLink to={"/addblogs"}>Add Blogs</NavLink>
+          </li>
+          <li>
+            <NavLink to={"/wishlist"}>Wishlist</NavLink>
+          </li>
+        </>
+      ) : (
+        ""
+      )}
     </>
   );
+
+  const handleLogOut = () =>{
+    logoutUser()
+  }
+
 
   return (
     <>
@@ -71,19 +84,34 @@ const NavBar = () => {
           </div>
 
           <div className="navbar-end flex items-center gap-2 text-xl text-white">
-            <Link
-              to="/auth/login"
-              className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
-            >
-              Sign In
-            </Link>
-            <RxSlash className="text-white" />
-            <Link
-              to="/auth/register"
-              className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
-            >
-              Register
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-2  rounded-4xl">
+                <div className="avatar tooltip tooltip-bottom" data-tip={user.displayName}>
+                  <div className="w-10 rounded-full">
+                    <img src={user.photoURL} />
+                  </div>
+                </div>
+                <button onClick={handleLogOut} className="btn bg-red-500 text-white border-none rounded-2xl">
+                  Log Out
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Link
+                  to="/auth/login"
+                  className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
+                >
+                  Sign In
+                </Link>
+                <RxSlash className="text-white" />
+                <Link
+                  to="/auth/register"
+                  className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
