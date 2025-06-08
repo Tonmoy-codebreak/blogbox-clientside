@@ -39,7 +39,7 @@ const NavBar = () => {
   return (
     <>
       <div className="bg-[#2563EB] shadow-sm">
-        <div className="navbar w-9/12 mx-auto text-white">
+        <div className="navbar w-9/12 mx-auto text-white font-main">
           <div className="navbar-start">
             <div className="dropdown">
               <div
@@ -91,19 +91,19 @@ const NavBar = () => {
                     <img src={user.photoURL} />
                   </div>
                 </div>
-                <button onClick={handleLogOut} className="btn bg-red-500 text-white border-none rounded-2xl">
+                <button onClick={handleLogOut} className="btn bg-red-500 border-0 text-white border-none rounded-2xl">
                   Log Out
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-5">
                 <Link
                   to="/auth/login"
                   className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
                 >
                   Sign In
                 </Link>
-                <RxSlash className="text-white" />
+               
                 <Link
                   to="/auth/register"
                   className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
