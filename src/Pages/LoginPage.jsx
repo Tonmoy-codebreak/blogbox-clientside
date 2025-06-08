@@ -2,10 +2,27 @@ import React from "react";
 import { useAuth } from "../Auth/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
-    const navigate = useNavigate()
-  const { signinUser } = useAuth();
+  const navigate = useNavigate();
+  const { signinUser, signWithGoogle, setUser } = useAuth();
+
+  // googleSign in
+  const handleGoogle = (e) => {
+    e.preventDefault();
+    signWithGoogle()
+      .then((result) => {
+        setUser(result.user);
+        alert("Google Login Done");
+        navigate("/");
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleSignIn = (e) => {
     e.preventDefault();
     const form = new FormData(e.target);
@@ -16,14 +33,21 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        user? alert('Sign in done') : ''
+        Swal.fire({
+          title: "Welcome Back",
+          icon: "success",
+        });
         // ...
-        navigate("/")
+        navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        alert(errorCode,errorMessage)
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: errorMessage,
+        });
       });
   };
   return (
@@ -34,7 +58,10 @@ const LoginPage = () => {
             Welcome Back
           </h2>
 
-          <button className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition mb-6">
+          <button
+            onClick={handleGoogle}
+            className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition mb-6"
+          >
             <FcGoogle className="text-2xl mr-2" />
             <span className="text-sm font-medium">Continue with Google</span>
           </button>

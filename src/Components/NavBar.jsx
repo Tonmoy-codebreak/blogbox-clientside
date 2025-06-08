@@ -2,6 +2,7 @@ import React from "react";
 import { RxSlash } from "react-icons/rx";
 import { Link, NavLink } from "react-router";
 import { useAuth } from "../Auth/useAuth";
+import Swal from "sweetalert2";
 
 const NavBar = () => {
   const { user,logoutUser } = useAuth();
@@ -16,7 +17,7 @@ const NavBar = () => {
       <li>
         <NavLink to={"/featuredblogs"}>Featured Blogs</NavLink>
       </li>
-      {user ? (
+      {user && (
         <>
           <li>
             <NavLink to={"/addblogs"}>Add Blogs</NavLink>
@@ -25,14 +26,13 @@ const NavBar = () => {
             <NavLink to={"/wishlist"}>Wishlist</NavLink>
           </li>
         </>
-      ) : (
-        ""
-      )}
+      ) }
     </>
   );
 
   const handleLogOut = () =>{
     logoutUser()
+    Swal.fire("You’ve been logged out");
   }
 
 

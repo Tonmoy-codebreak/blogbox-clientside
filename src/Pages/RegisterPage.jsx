@@ -1,39 +1,79 @@
-import React from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../Auth/useAuth";
 import { updateProfile } from "firebase/auth";
+import Swal from "sweetalert2";
 
 const RegisterPage = () => {
-    const navigate = useNavigate()
-    const { createUser } = useAuth()
+  const navigate = useNavigate();
+  const { createUser, signWithGoogle, setUser } = useAuth();
+  const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogle = (e) => {
+    e.preventDefault();
+    signWithGoogle()
+      .then((result) => {
+        setUser(result.user);
+        alert("Google Login Done");
+        navigate("/");
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleRegister = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const form = new FormData(e.target);
     const data = Object.fromEntries(form.entries());
-    console.log(data.email,data.password);
+    const password = data.password;
+
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
+
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Password must be at least 6 characters long and include at least one uppercase letter, one number, and one special character."
+      );
+      setIsLoading(false);
+      return;
+    } else {
+      setPasswordError("");
+    }
 
     // Register
-    createUser(data.email,data.password)
-    .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    updateProfile(user,{displayName:data.name , photoURL: data.photoURL})
-    .then(()=> user)
-    .then(user =>{
-        alert("Register Done")
-        navigate("/")
-        console.log(user)
-    })
+    createUser(data.email, data.password)
+      .then((userCredential) => {
+        // Sign up
+        const user = userCredential.user;
+        updateProfile(user, { displayName: data.name, photoURL: data.photoURL })
+          .then(() => user)
+          .then((user) => {
+            Swal.fire({
+              title: "Account created successfully",
+              icon: "success",
+              draggable: true,
+            });
+            navigate("/");
+            console.log(user);
+          });
 
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-    alert(errorCode,errorMessage)
-  });
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: errorMessage,
+        });
+      });
   };
   return (
     <div>
@@ -44,7 +84,10 @@ const RegisterPage = () => {
           </h2>
 
           {/* Google Sign In Button */}
-          <button className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition">
+          <button
+            onClick={handleGoogle}
+            className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
+          >
             <FcGoogle className="text-2xl mr-2" />
             <span className="text-sm font-medium">Sign up with Google</span>
           </button>
@@ -105,6 +148,9 @@ const RegisterPage = () => {
                 className="w-full px-4 py-2 border border-gray-300  rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {passwordError && (
+                <p className="text-sm text-red-600 mt-1">{passwordError}</p>
+              )}
             </div>
 
             <button
