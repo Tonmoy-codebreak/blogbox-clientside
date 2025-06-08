@@ -10,6 +10,8 @@ import WishList from "../Pages/WishList";
 import AuthLayout from "../Layouts/AuthLayout";
 import LoginPage from "../Pages/LoginPage";
 import RegisterPage from "../Pages/RegisterPage";
+import PrivateRoute from "./PrivateRoute";
+
 
 const router = createBrowserRouter([
   {
@@ -30,11 +32,19 @@ const router = createBrowserRouter([
         },
         {
           path:"/addblogs",
-          element: <AddBlogs></AddBlogs>
+          element: <PrivateRoute>
+                <AddBlogs></AddBlogs>
+          </PrivateRoute>
+          
+          
         },
         {
           path:"/wishlist",
-          element: <WishList></WishList>
+          element: 
+            <PrivateRoute>
+              <WishList></WishList>
+            </PrivateRoute>
+         
         },
     ]
   },

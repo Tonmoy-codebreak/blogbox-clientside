@@ -58,7 +58,7 @@ const RegisterPage = () => {
               icon: "success",
               draggable: true,
             });
-            navigate("/");
+             navigate(location.state?.from?.pathname || "/");
             console.log(user);
           });
 

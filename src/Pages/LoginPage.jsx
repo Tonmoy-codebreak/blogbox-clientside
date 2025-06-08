@@ -38,7 +38,7 @@ const LoginPage = () => {
           icon: "success",
         });
         // ...
-        navigate("/");
+         navigate(location.state?.from?.pathname || "/");
       })
       .catch((error) => {
         const errorCode = error.code;
