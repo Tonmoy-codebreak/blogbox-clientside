@@ -27,6 +27,8 @@ const RecentBlogs = () => {
         )
     }
 
+    
+
 
    return (
   <div className="bg-gray-50 py-16">
