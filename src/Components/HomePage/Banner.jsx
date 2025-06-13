@@ -1,13 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router";
+import { motion } from "framer-motion";
 
 const Banner = () => {
-    const navigate = useNavigate()
-    const handleExplore = () =>{
-        navigate("/allblogs")
-    }
+  const navigate = useNavigate();
+
+  const handleExplore = () => {
+    navigate("/allblogs");
+  };
+
   return (
-    <div className="  overflow-hidden font-main">
+    <div className="overflow-hidden font-main">
       <div
         className="hero min-h-[70vh] relative"
         style={{
@@ -22,17 +25,42 @@ const Banner = () => {
 
         {/* Content */}
         <div className="relative z-20 flex items-center justify-center w-full h-full text-left text-neutral-content px-4">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-extrabold font-main leading-tight mb-6">
+          <motion.div
+            className="max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h1
+              className="text-4xl md:text-6xl font-extrabold font-main leading-tight mb-6"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
               Welcome to <span className="">BlogBox</span>
-            </h1>
-            <p className="mb-8 font-main text-lg md:text-xl text-gray-200">
-             Your daily dose of fresh ideas and inspiring blogs. Explore meaningful insights that spark curiosity and growth. Dive into thought-provoking articles crafted with passion. Fuel your mind ,one story, one idea, one moment at a time.
-            </p>
-            <button onClick={handleExplore} className="btn bg-blue-600 text-white rounded-4xl border-0 shadow-md hover:scale-105 transition-transform duration-300">
+            </motion.h1>
+
+            <motion.p
+              className="mb-8 font-main text-lg md:text-xl text-gray-200"
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              Your daily dose of fresh ideas and inspiring blogs. Explore meaningful insights that spark curiosity and growth. Dive into thought-provoking articles crafted with passion. Fuel your mind — one story, one idea, one moment at a time.
+            </motion.p>
+
+            <motion.button
+              onClick={handleExplore}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn bg-blue-600 text-white rounded-4xl border-0 shadow-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
               Explore Blogs
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
     </div>
