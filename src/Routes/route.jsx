@@ -11,12 +11,15 @@ import AuthLayout from "../Layouts/AuthLayout";
 import LoginPage from "../Pages/LoginPage";
 import RegisterPage from "../Pages/RegisterPage";
 import PrivateRoute from "./PrivateRoute";
+import ErrorPage from "../Pages/ErrorPage";
+import BlogDetails from "../Pages/BlogDetails";
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
         {
              path: "/",
@@ -31,7 +34,7 @@ const router = createBrowserRouter([
           element: <FeaturedBlogs></FeaturedBlogs>
         },
         {
-          path:"/addblogs",
+          path:"/addblog",
           element: <PrivateRoute>
                 <AddBlogs></AddBlogs>
           </PrivateRoute>
@@ -46,11 +49,20 @@ const router = createBrowserRouter([
             </PrivateRoute>
          
         },
+        {
+          path:"/blog/:id",
+          element: 
+            <PrivateRoute>
+              <BlogDetails></BlogDetails>
+            </PrivateRoute>
+         
+        },
     ]
   },
   {
     path: "/auth",
     element: <AuthLayout></AuthLayout>,
+    errorElement: <ErrorPage></ErrorPage>,
     children:[
       {
         path: "/auth/login",

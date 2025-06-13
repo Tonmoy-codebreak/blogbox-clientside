@@ -1,57 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../Auth/useAuth";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router"; 
 import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { signinUser, signWithGoogle, setUser } = useAuth();
+  const location = useLocation();
+  const { signinUser, signWithGoogle, setUser, setLoading, loading } = useAuth(); 
+  const [localLoading, setLocalLoading] = useState(false); 
 
-  // googleSign in
+  const isLoading = loading ?? localLoading;
+  const setAppLoading = setLoading ?? setLocalLoading;
+
+  // Google Sign-In
   const handleGoogle = (e) => {
     e.preventDefault();
+    setAppLoading(true);
     signWithGoogle()
       .then((result) => {
-        setUser(result.user);
-        alert("Google Login Done");
-        navigate("/");
+        const user = result.user;
+        return user.reload().then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Logged in with Google!",
+          });
+          navigate("/");
+        });
       })
-
       .catch((error) => {
-        console.log(error);
-      });
+        console.error("Google login error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Google Login Failed",
+          text: error.message,
+        });
+      })
+      .finally(() => setAppLoading(false));
   };
 
   const handleSignIn = (e) => {
     e.preventDefault();
+    setAppLoading(true);
     const form = new FormData(e.target);
     const data = Object.fromEntries(form.entries());
 
-    // signing in user
     signinUser(data.email, data.password)
       .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
         Swal.fire({
           title: "Welcome Back",
           icon: "success",
         });
-        // ...
-         navigate(location.state?.from?.pathname || "/");
+        navigate(location.state?.from?.pathname || "/");
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: errorMessage,
+          text: error.message,
         });
-      });
+      })
+      .finally(() => setAppLoading(false));
   };
+
   return (
     <div>
+      {/* Spinner Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center">
+          <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+        </div>
+      )}
+
       <div className="min-h-screen flex items-center justify-center px-4 bg-white">
         <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
@@ -60,6 +80,7 @@ const LoginPage = () => {
 
           <button
             onClick={handleGoogle}
+            disabled={isLoading}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition mb-6"
           >
             <FcGoogle className="text-2xl mr-2" />
@@ -74,7 +95,7 @@ const LoginPage = () => {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* ///////////////////////////////////////////////////////FORM */}
+          {/* Form */}
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Email</label>
@@ -102,9 +123,12 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+              disabled={isLoading}
+              className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Sign In
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 

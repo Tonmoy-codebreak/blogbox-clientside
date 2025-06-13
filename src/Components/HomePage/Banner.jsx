@@ -7,7 +7,7 @@ const Banner = () => {
         navigate("/allblogs")
     }
   return (
-    <div className="py-10 rounded-2xl overflow-hidden font-main">
+    <div className="  overflow-hidden font-main">
       <div
         className="hero min-h-[70vh] relative"
         style={{
@@ -21,16 +21,16 @@ const Banner = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/30 z-10"></div>
 
         {/* Content */}
-        <div className="relative z-20 flex items-center justify-center w-full h-full text-center text-neutral-content px-4">
+        <div className="relative z-20 flex items-center justify-center w-full h-full text-left text-neutral-content px-4">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-extrabold font-main leading-tight mb-6">
               Welcome to <span className="">BlogBox</span>
             </h1>
             <p className="mb-8 font-main text-lg md:text-xl text-gray-200">
-              Your daily dose of ideas, stories, and insights. Dive into thought-provoking articles written by passionate minds.
+             Your daily dose of fresh ideas and inspiring blogs. Explore meaningful insights that spark curiosity and growth. Dive into thought-provoking articles crafted with passion. Fuel your mind ,one story, one idea, one moment at a time.
             </p>
             <button onClick={handleExplore} className="btn bg-blue-600 text-white rounded-4xl border-0 shadow-md hover:scale-105 transition-transform duration-300">
-              Explore Posts
+              Explore Blogs
             </button>
           </div>
         </div>

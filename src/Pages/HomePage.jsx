@@ -1,10 +1,12 @@
 import React from 'react';
 import Banner from '../Components/HomePage/Banner';
+import RecentBlogs from '../Components/HomePage/RecentBlogs';
 
 const HomePage = () => {
     return (
-        <div className='w-9/12 mx-auto'>
+        <div>
             <Banner></Banner>
+            <RecentBlogs></RecentBlogs>
         </div>
     );
 };

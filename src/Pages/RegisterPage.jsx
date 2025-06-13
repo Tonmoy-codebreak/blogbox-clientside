@@ -7,27 +7,40 @@ import Swal from "sweetalert2";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { createUser, signWithGoogle, setUser } = useAuth();
+  const { createUser, signWithGoogle, setUser, setLoading, loading } = useAuth();
   const [passwordError, setPasswordError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
+  // Google Sign-In
   const handleGoogle = (e) => {
     e.preventDefault();
+    setLoading(true); 
     signWithGoogle()
       .then((result) => {
-        setUser(result.user);
-        alert("Google Login Done");
-        navigate("/");
+        const user = result.user;
+        user.reload().then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Logged in with Google!",
+          });
+          setLoading(false); 
+          navigate("/");
+        });
       })
-
       .catch((error) => {
-        console.log(error);
+        console.error("Google login error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Google Login Failed",
+          text: error.message,
+        });
+        setLoading(false); 
       });
   };
 
+  // Handle Register
   const handleRegister = (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
     const form = new FormData(e.target);
     const data = Object.fromEntries(form.entries());
     const password = data.password;
@@ -39,45 +52,53 @@ const RegisterPage = () => {
       setPasswordError(
         "Password must be at least 6 characters long and include at least one uppercase letter, one number, and one special character."
       );
-      setIsLoading(false);
+      setLoading(false);
       return;
     } else {
       setPasswordError("");
     }
 
-    // Register
     createUser(data.email, data.password)
       .then((userCredential) => {
-        // Sign up
         const user = userCredential.user;
-        updateProfile(user, { displayName: data.name, photoURL: data.photoURL })
-          .then(() => user)
-          .then((user) => {
+        updateProfile(user, {
+          displayName: data.name,
+          photoURL: data.photoURL,
+        })
+          .then(() => {
             Swal.fire({
               title: "Account created successfully",
               icon: "success",
               draggable: true,
             });
-             navigate(location.state?.from?.pathname || "/");
-            console.log(user);
+            setLoading(false);
+            navigate("/");
+          })
+          .catch((error) => {
+            console.error("Profile update failed:", error);
+            setLoading(false);
           });
-
-        // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: errorMessage,
+          text: error.message,
         });
+        setLoading(false);
       });
   };
+
   return (
     <div>
-      <div className="min-h-screen flex items-center justify-center  px-4">
+      {/* Spinner */}
+      {loading && (
+        <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center">
+          <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+        </div>
+      )}
+
+      <div className="min-h-screen flex items-center justify-center px-4">
         <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
             Create Your Account
@@ -87,6 +108,7 @@ const RegisterPage = () => {
           <button
             onClick={handleGoogle}
             className="flex items-center justify-center w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
+            disabled={loading}
           >
             <FcGoogle className="text-2xl mr-2" />
             <span className="text-sm font-medium">Sign up with Google</span>
@@ -101,7 +123,7 @@ const RegisterPage = () => {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* Registration Form */}
+          {/* Form */}
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Name</label>
@@ -120,7 +142,7 @@ const RegisterPage = () => {
                 name="email"
                 type="email"
                 placeholder="example@email.com"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
@@ -133,7 +155,7 @@ const RegisterPage = () => {
                 name="photoURL"
                 type="url"
                 placeholder="https://example.com/your-photo.jpg"
-                className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -145,7 +167,7 @@ const RegisterPage = () => {
                 name="password"
                 type="password"
                 placeholder="********"
-                className="w-full px-4 py-2 border border-gray-300  rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               {passwordError && (
@@ -155,13 +177,15 @@ const RegisterPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 rounded-lg transition"
+              disabled={loading}
+              className={`w-full bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 rounded-lg transition ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Create Account
+              {loading ? "Creating..." : "Create Account"}
             </button>
           </form>
 
-          {/* Footer */}
           <p className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link

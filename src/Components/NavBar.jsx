@@ -5,7 +5,8 @@ import { useAuth } from "../Auth/useAuth";
 import Swal from "sweetalert2";
 
 const NavBar = () => {
-  const { user,logoutUser } = useAuth();
+  const { user, logoutUser, loading } = useAuth();
+
   const navOption = (
     <>
       <li>
@@ -20,102 +21,111 @@ const NavBar = () => {
       {user && (
         <>
           <li>
-            <NavLink to={"/addblogs"}>Add Blogs</NavLink>
+            <NavLink to={"/addblog"}>Add Blog</NavLink>
           </li>
           <li>
             <NavLink to={"/wishlist"}>Wishlist</NavLink>
           </li>
         </>
-      ) }
+      )}
     </>
   );
 
-  const handleLogOut = () =>{
-    logoutUser()
+  const handleLogOut = () => {
+    logoutUser();
     Swal.fire("You’ve been logged out");
-  }
-
+  };
 
   return (
-    <>
-      <div className="bg-[#2563EB] shadow-sm">
-        <div className="navbar w-9/12 mx-auto text-white font-main">
-          <div className="navbar-start">
-            <div className="dropdown">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost lg:hidden"
+    <div className="bg-[#2563EB] shadow-sm">
+      <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white font-main">
+        {/* Mobile Dropdown */}
+        <div className="navbar-start">
+          <div className="dropdown">
+            <button tabIndex={0} className="btn btn-ghost lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {" "}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h8m-8 6h16"
-                  />{" "}
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content bg-[#2563EB]  rounded-box z-1 mt-3 w-52 p-2 shadow"
-              >
-                {navOption}
-              </ul>
-            </div>
-            <div className="flex items-center gap-3">
-              <img
-                src="https://i.ibb.co/39cR051g/blogbox3.png"
-                alt="logo"
-                className="h-10"
-              />
-              <h1 className="text-2xl">BlogBox</h1>
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />
+              </svg>
+            </button>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-[#2563EB] rounded-box w-52 z-10"
+            >
+              {navOption}
+            </ul>
           </div>
-          <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1 text-xl">{navOption}</ul>
-          </div>
-
-          <div className="navbar-end flex items-center gap-2 text-xl text-white">
-            {user ? (
-              <div className="flex items-center gap-2  rounded-4xl">
-                <div className="avatar tooltip tooltip-bottom" data-tip={user.displayName}>
-                  <div className="w-10 rounded-full">
-                    <img src={user.photoURL} />
-                  </div>
-                </div>
-                <button onClick={handleLogOut} className="btn bg-red-500 border-0 text-white border-none rounded-2xl">
-                  Log Out
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-5">
-                <Link
-                  to="/auth/login"
-                  className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
-                >
-                  Sign In
-                </Link>
-               
-                <Link
-                  to="/auth/register"
-                  className="transition-all duration-300 hover:text-yellow-300 hover:underline underline-offset-4"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <img
+              src="https://i.ibb.co/39cR051g/blogbox3.png"
+              alt="logo"
+              className="h-10"
+            />
+            <h1 className="text-xl sm:text-2xl">BlogBox</h1>
           </div>
         </div>
+
+        {/* Desktop Nav */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1 text-lg md:text-xl">
+            {navOption}
+          </ul>
+        </div>
+
+        {/* Auth Section */}
+        <div className="navbar-end flex items-center gap-3 text-base sm:text-lg md:text-xl text-white">
+          {loading ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : user ? (
+            <div className="flex items-center gap-2">
+              <div
+                className="avatar tooltip tooltip-bottom"
+                data-tip={user.displayName}
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    src={user.photoURL || "/default.png"}
+                    alt="User Avatar"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleLogOut}
+                className="btn bg-red-500 border-0 text-white rounded-2xl text-sm sm:text-base"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-5">
+              <Link
+                to="/auth/login"
+                className="hover:text-yellow-300 hover:underline underline-offset-4"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/auth/register"
+                className="hover:text-yellow-300 hover:underline underline-offset-4"
+              >
+                Register
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
