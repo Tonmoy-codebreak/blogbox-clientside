@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import useAxios from '../../hooks/useAxios';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaArrowRightLong } from 'react-icons/fa6';
+import { useAuth } from '../../Auth/useAuth';
 
 const RecentBlogs = () => {
     const axiosSecure = useAxios()
     const [blogs, setBlogs] = useState([])
     const [loading,setLoading]= useState(true)
+    const { user } = useAuth()
+    const navigate = useNavigate()
 
     useEffect(()=>{
         axiosSecure.get('/blogs/recent')
@@ -27,7 +32,13 @@ const RecentBlogs = () => {
         )
     }
 
-    
+    const handleWishlist = () =>{
+
+      user?
+      alert(`Added to Wishlist`)
+      :
+      navigate("/auth/login")
+    }
 
 
    return (
@@ -56,10 +67,13 @@ const RecentBlogs = () => {
 
               <div className="mt-5 flex justify-between items-center">
                 
-                 <Link className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition" to={`/blog/${blog._id}`}> Details →</Link>
+                 <Link className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition" to={`/blog/${blog._id}`}> 
+                 <span className='flex items-center gap-1'>Details <FaArrowRightLong /></span>
+                 
+                 </Link>
                 
-                <button className="text-sm font-semibold text-red-500 hover:text-red-600 transition">
-                  ♡ Wishlist
+                <button onClick={handleWishlist} className="text-sm font-semibold text-red-500 hover:text-red-600 transition cursor-pointer">
+                 <span className='flex items-center gap-2'><FaRegHeart /> Wishlist</span>
                 </button>
               </div>
             </div>
