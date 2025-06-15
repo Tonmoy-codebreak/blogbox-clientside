@@ -1,90 +1,141 @@
-import React, { useEffect, useState } from 'react';
-import useAxios from '../../hooks/useAxios';
-import { Link, useNavigate } from 'react-router';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { FaArrowRightLong } from 'react-icons/fa6';
-import { useAuth } from '../../Auth/useAuth';
+import React, { useEffect, useState } from "react";
+import useAxios from "../../hooks/useAxios";
+import { Link, useNavigate } from "react-router";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { useAuth } from "../../Auth/useAuth";
+import Swal from "sweetalert2";
 
 const RecentBlogs = () => {
-    const axiosSecure = useAxios()
-    const [blogs, setBlogs] = useState([])
-    const [loading,setLoading]= useState(true)
-    const { user } = useAuth()
-    const navigate = useNavigate()
+  const axiosSecure = useAxios();
+  const [blogs, setBlogs] = useState([]);
+  const [wishlist, setWishlist] = useState([]); 
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-    useEffect(()=>{
-        axiosSecure.get('/blogs/recent')
-        .then(res =>{
-            setBlogs(res.data)
-            setLoading(false)
-        })
-        .catch(err =>{
-            setLoading(false)
-        })
-    },[axiosSecure])
+  //  axiosssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const blogRes = await axiosSecure.get("/blogs/recent");
+        setBlogs(blogRes.data);
 
+        if (user?.email) {
+          const wishlistRes = await axiosSecure.get(
+            `/user/wishlist?email=${user.email}`
+          );
+          setWishlist(wishlistRes.data?.wishlist || []);
+        }
 
-    if(loading){
-        return(
-            <div className='w-9/12 mx-auto text-center py-32'>
-                <span className="loading loading-dots loading-xl"></span>
-            </div>
-        )
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching recent blogs or wishlist", err);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [axiosSecure, user?.email]);
+
+  // Onlclickkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+  const handleWishlist = async (blogId) => {
+    if (!user) {
+      return navigate("/auth/login");
     }
 
-    const handleWishlist = () =>{
-
-      user?
-      alert(`Added to Wishlist`)
-      :
-      navigate("/auth/login")
+    try {
+      await axiosSecure.patch(`/user/wishlist/${user.email}`, { blogId });
+      setWishlist((prev) => [...prev, blogId]);
+      Swal.fire({
+        title: "Added to Wishlist",
+        icon: "success",
+        
+      });
+    } catch (err) {
+      console.error("Failed to add to wishlist", err);
     }
+  };
 
+  // ------------------------------------------------
 
-   return (
-  <div className="bg-gray-50 py-16">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 className="text-center text-4xl sm:text-5xl font-bold text-blue-600 font-main mb-14">
-        Recent Blogs
-      </h1>
+  if (loading) {
+    return (
+      <div className="w-9/12 mx-auto text-center py-32">
+        <span className="loading loading-dots loading-xl"></span>
+      </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        {blogs.map(blog => (
-          <div
-            key={blog._id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
-          >
-            <div className="h-52 overflow-hidden">
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="p-6 flex flex-col flex-grow font-main">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">{blog.title}</h2>
-              <p className="text-sm text-gray-600 flex-grow">{blog.shortDesc}</p>
+  return (
+    <div className="bg-gray-50 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-center text-4xl sm:text-5xl font-bold text-blue-600 font-main mb-14">
+          Recent Blogs
+        </h1>
 
-              <div className="mt-5 flex justify-between items-center">
-                
-                 <Link className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition" to={`/blog/${blog._id}`}> 
-                 <span className='flex items-center gap-1'>Details <FaArrowRightLong /></span>
-                 
-                 </Link>
-                
-                <button onClick={handleWishlist} className="text-sm font-semibold text-red-500 hover:text-red-600 transition cursor-pointer">
-                 <span className='flex items-center gap-2'><FaRegHeart /> Wishlist</span>
-                </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {blogs.map((blog) => {
+            const isWishlisted = wishlist.includes(blog._id);
+
+            return (
+              <div
+                key={blog._id}
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+              >
+                <div className="h-52 overflow-hidden">
+                  <img
+                    src={blog.image}
+                    alt={blog.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-6 flex flex-col flex-grow font-main">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    {blog.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 flex-grow hidden md:block">
+                    {blog.shortDesc}
+                  </p>
+
+                  <div className="mt-5 flex justify-between items-center">
+                    <Link
+                      className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition"
+                      to={`/blog/${blog._id}`}
+                    >
+                      <span className="flex items-center gap-1">
+                        Details <FaArrowRightLong />
+                      </span>
+                    </Link>
+
+                    <button
+                      onClick={() => handleWishlist(blog._id)}
+                      disabled={isWishlisted}
+                      className={`text-sm font-semibold flex items-center gap-2 ${
+                        isWishlisted
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-red-500 hover:text-red-600"
+                      } transition`}
+                    >
+                      {isWishlisted ? (
+                        <>
+                          <FaHeart /> Wishlisted
+                        </>
+                      ) : (
+                        <>
+                          <FaRegHeart /> Wishlist
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
+  );
 };
 
 export default RecentBlogs;
