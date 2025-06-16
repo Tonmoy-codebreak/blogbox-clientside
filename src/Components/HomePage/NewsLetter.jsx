@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { div } from "framer-motion/client";
 
 const NewsLetter = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,9 @@ const NewsLetter = () => {
   };
 
   return (
-    <motion.div
+    <div className="bg-gray-50 py-20">
+      <h1 className="text-center text-5xl font-semibold font-title text-blue-600 ">Newsletter</h1>
+      <motion.div
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -73,6 +76,7 @@ const NewsLetter = () => {
         </form>
       </motion.div>
     </motion.div>
+    </div>
   );
 };
 

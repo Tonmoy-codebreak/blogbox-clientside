@@ -70,7 +70,7 @@ const RecentBlogs = () => {
   return (
     <div className="bg-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-center text-4xl sm:text-5xl font-bold text-blue-600 font-main mb-14">
+        <h1 className="text-center text-4xl sm:text-5xl font-semibold text-blue-600 font-title mb-14 lg:pt-20">
           Recent Blogs
         </h1>
 
