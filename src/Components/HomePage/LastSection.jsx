@@ -22,7 +22,7 @@ const LastSection = () => {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10 md:py-10 font-main">
+    <section className="max-w-7xl mx-auto px-4 py-10 md:py-20 font-main">
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

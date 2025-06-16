@@ -11,6 +11,7 @@ const AllBlogs = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [category, setCategory] = useState("");
   const axiosSecure = useAxios();
   const { user } = useAuth();
@@ -21,10 +22,11 @@ const AllBlogs = () => {
     const fetchBlogs = async () => {
       try {
         if (search || category) {
-          setIsSearching(true); // trigger search spinner
+          setIsSearching(true);
         } else {
-          setLoading(true); // only used on initial load
+          setLoading(true);
         }
+
         const query = new URLSearchParams();
         if (search) query.append("search", search);
         if (category) query.append("category", category);
@@ -40,10 +42,11 @@ const AllBlogs = () => {
         }
 
         setLoading(false);
+        setIsSearching(false);
       } catch (err) {
         console.error("Failed to load blogs", err);
-        setLoading(false)
-        setIsSearching(false)
+        setLoading(false);
+        setIsSearching(false);
       }
     };
 
@@ -62,30 +65,36 @@ const AllBlogs = () => {
     }
   };
 
-  {isSearching && (
-  <div className="text-center pb-6">
-    <span className="loading loading-dots loading-sm text-blue-600"></span>
-  </div>
-)}
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-16 font-main">
-      <h1 className="text-4xl font-bold text-center text-blue-600 mb-10">
+      <h1 className="text-4xl font-bold font-title text-center text-blue-600 mb-10">
         All Blogs
       </h1>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-10">
-        <input
-          type="text"
-          placeholder="Search by title..."
-          className="w-full sm:w-2/3 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-600"
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        {/* Search input and button */}
+        <div className="flex w-full sm:w-2/3 gap-2">
+          <input
+            type="text"
+            placeholder="Search by title..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="w-full px-4 py-2 border-gray-200 border-2 rounded-md focus:ring-2 focus:ring-blue-600"
+          />
+          <button
+            onClick={() => setSearch(searchInput)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Search
+          </button>
+        </div>
+
+        {/* Category filter */}
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full sm:w-1/3 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-600"
+          className="w-full sm:w-1/3 px-4 py-2 border-gray-200 border-2 rounded-md focus:ring-2 focus:ring-blue-600"
         >
           <option value="">All Categories</option>
           <option value="technology">Technology</option>
@@ -97,7 +106,14 @@ const AllBlogs = () => {
         </select>
       </div>
 
-      {/* Loader */}
+      {/* Searching Spinner */}
+      {isSearching && (
+        <div className="text-center pb-6">
+          <span className="loading loading-dots loading-sm text-blue-600"></span>
+        </div>
+      )}
+
+      {/* Loader or Blog List */}
       {loading ? (
         <div className="text-center py-20">
           <span className="loading loading-dots loading-xl"></span>
