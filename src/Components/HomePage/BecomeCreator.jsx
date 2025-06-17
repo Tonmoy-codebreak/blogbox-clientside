@@ -42,13 +42,13 @@ const BecomeCreator = () => {
       </h2>
 
       {/* Layout Grid */}
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Image Section (Left) */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="md:col-span-5 w-full"
+          className="lg:col-span-5 w-full"
         >
           <img
             src="https://i.ibb.co/VWSVfW7s/blogbox-cover.png"
@@ -62,7 +62,7 @@ const BecomeCreator = () => {
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="md:col-span-7"
+          className="lg:col-span-7"
         >
           {/* FAQ Buttons */}
           <div className="flex flex-wrap gap-3 mb-6 justify-start">

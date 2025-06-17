@@ -13,7 +13,7 @@ const RegisterPage = () => {
   // Google Sign-In
   const handleGoogle = (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     signWithGoogle()
       .then((result) => {
         const user = result.user;
@@ -22,7 +22,7 @@ const RegisterPage = () => {
             icon: "success",
             title: "Logged in with Google!",
           });
-          setLoading(false); 
+          setLoading(false);
           navigate("/");
         });
       })
@@ -33,7 +33,7 @@ const RegisterPage = () => {
           title: "Google Login Failed",
           text: error.message,
         });
-        setLoading(false); 
+        setLoading(false);
       });
   };
 
@@ -90,15 +90,18 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
-      {/* Spinner */}
-      {loading && (
-        <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center">
-          <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full"></div>
-        </div>
-      )}
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12">
+      {/* Left Side Image */}
+      <div className="hidden lg:block lg:col-span-8">
+        <img
+          src="https://images.unsplash.com/photo-1612064189357-2b3b1c920b15?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Register Illustration"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-      <div className="min-h-screen flex items-center justify-center px-4">
+      {/* Right Side Form */}
+      <div className="flex items-center justify-center px-4 bg-white lg:col-span-4">
         <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
             Create Your Account
@@ -117,9 +120,7 @@ const RegisterPage = () => {
           {/* Divider */}
           <div className="flex items-center my-6">
             <hr className="flex-1 border-gray-300" />
-            <span className="px-4 text-sm text-gray-500">
-              or use your email
-            </span>
+            <span className="px-4 text-sm text-gray-500">or use your email</span>
             <hr className="flex-1 border-gray-300" />
           </div>
 
@@ -148,9 +149,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Photo URL
-              </label>
+              <label className="text-sm font-medium text-gray-700">Photo URL</label>
               <input
                 name="photoURL"
                 type="url"
@@ -160,9 +159,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Password
-              </label>
+              <label className="text-sm font-medium text-gray-700">Password</label>
               <input
                 name="password"
                 type="password"
@@ -197,6 +194,13 @@ const RegisterPage = () => {
           </p>
         </div>
       </div>
+
+      {/* Spinner */}
+      {loading && (
+        <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center">
+          <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+        </div>
+      )}
     </div>
   );
 };

@@ -33,7 +33,7 @@ const LastSection = () => {
         Discover Diverse Perspectives
       </motion.h2>
 
-      <div className="grid md:grid-cols-3 gap-10 items-start">
+      <div className="grid lg:grid-cols-3 gap-10 items-start">
         {/* Text content */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -42,10 +42,10 @@ const LastSection = () => {
           viewport={{ once: true }}
           className="md:col-span-1 bg-blue-50 rounded-3xl p-8 shadow-lg h-full"
         >
-          <h3 className="text-2xl font-semibold mb-6 text-gray-800">
+          <h3 className="lg:text-2xl font-semibold mb-6 text-gray-800">
             Thoughtful Reads. Fresh Views.
           </h3>
-          <div className="text-gray-700 text-[17px] space-y-8 leading-relaxed">
+          <div className="text-gray-700 text-lg space-y-8 leading-relaxed">
             <p>
               At BlogBox, we believe that every article is more than just information—it's a doorway to new perspectives and a deeper understanding of the world around us. Our content spans innovation, creativity, and real-life stories that resonate.
             </p>
