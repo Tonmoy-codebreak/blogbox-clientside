@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useAuth } from "../Auth/useAuth";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useNavigate, useLocation } from "react-router"; 
+import { Link, useNavigate, useLocation } from "react-router";
 import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signinUser, signWithGoogle, setUser, setLoading, loading } = useAuth(); 
-  const [localLoading, setLocalLoading] = useState(false); 
+  const { signinUser, signWithGoogle, setUser, setLoading, loading } = useAuth();
+  const [localLoading, setLocalLoading] = useState(false);
 
   const isLoading = loading ?? localLoading;
   const setAppLoading = setLoading ?? setLocalLoading;
 
-  // Google Sign-In
   const handleGoogle = (e) => {
     e.preventDefault();
     setAppLoading(true);
@@ -46,7 +45,7 @@ const LoginPage = () => {
     const data = Object.fromEntries(form.entries());
 
     signinUser(data.email, data.password)
-      .then((userCredential) => {
+      .then(() => {
         Swal.fire({
           title: "Welcome Back",
           icon: "success",
@@ -64,7 +63,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12">
       {/* Spinner Overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center">
@@ -72,8 +71,18 @@ const LoginPage = () => {
         </div>
       )}
 
-      <div className="min-h-screen flex items-center justify-center px-4 bg-white">
-        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+      {/* Left Image */}
+      <div className="hidden lg:block lg:col-span-8">
+        <img
+          src="https://images.unsplash.com/photo-1689421754955-d1595ea47d2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Login Illustration"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Right Login Form */}
+      <div className="flex items-center justify-center px-4 bg-white lg:col-span-4">
+        <div className="w-full max-w-md p-8 rounded-xl shadow-md">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Welcome Back
           </h2>
@@ -95,7 +104,6 @@ const LoginPage = () => {
             <hr className="flex-1 border-gray-300" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Email</label>
@@ -109,9 +117,7 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Password
-              </label>
+              <label className="text-sm font-medium text-gray-700">Password</label>
               <input
                 name="password"
                 type="password"
