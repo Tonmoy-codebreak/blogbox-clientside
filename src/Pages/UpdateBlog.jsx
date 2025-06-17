@@ -12,7 +12,7 @@ const UpdateBlog = () => {
 
   // blog detailszzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
   useEffect(() => {
-    console.log(id)
+    
     axiosSecure.get(`/blogs/${id}`)
      .then(res => {
       setBlog(res.data);
