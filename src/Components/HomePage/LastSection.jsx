@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const LastSection = () => {
+const LastSection = ({ isDark }) => {
   const images = [
     {
       src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dGVjaHxlbnwwfDB8MHx8fDI%3D",
@@ -22,13 +22,19 @@ const LastSection = () => {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10 md:py-20 font-main">
+    <section
+      className={`max-w-7xl mx-auto px-4 py-10 md:py-20 font-main transition-colors duration-300
+        ${isDark ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}
+      `}
+    >
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
         viewport={{ once: true }}
-        className="text-4xl md:text-5xl font-bold text-center text-blue-600 mb-12"
+        className={`text-4xl md:text-5xl font-bold text-center mb-12 ${
+          isDark ? "text-blue-400" : "text-blue-600"
+        }`}
       >
         Discover Diverse Perspectives
       </motion.h2>
@@ -40,12 +46,13 @@ const LastSection = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="md:col-span-1 bg-blue-50 rounded-3xl p-8 shadow-lg h-full"
+          className={`md:col-span-1 rounded-3xl p-8 shadow-lg h-full transition-colors duration-300
+            ${isDark ? "bg-gray-800 text-gray-300" : "bg-blue-50 text-gray-800"}`}
         >
-          <h3 className="lg:text-2xl font-semibold mb-6 text-gray-800">
+          <h3 className="lg:text-2xl font-semibold mb-6">
             Thoughtful Reads. Fresh Views.
           </h3>
-          <div className="text-gray-700 text-lg space-y-8 leading-relaxed">
+          <div className="text-lg space-y-8 leading-relaxed">
             <p>
               At BlogBox, we believe that every article is more than just information—it's a doorway to new perspectives and a deeper understanding of the world around us. Our content spans innovation, creativity, and real-life stories that resonate.
             </p>
@@ -80,7 +87,10 @@ const LastSection = () => {
                   alt={img.label}
                   className="w-full h-52 object-cover group-hover:scale-105 transition duration-300"
                 />
-                <div className="absolute bottom-3 left-3 bg-white/80 text-sm px-3 py-1 rounded-full text-blue-700 font-medium shadow-md">
+                <div
+                  className={`absolute bottom-3 left-3 px-3 py-1 rounded-full font-medium shadow-md
+                    ${isDark ? "bg-gray-700 text-blue-400" : "bg-white/80 text-blue-700"}`}
+                >
                   {img.label}
                 </div>
               </motion.div>
@@ -98,7 +108,10 @@ const LastSection = () => {
               alt={images[2].label}
               className="w-full h-64 object-cover group-hover:scale-105 transition duration-300"
             />
-            <div className="absolute bottom-3 left-3 bg-white/80 text-sm px-3 py-1 rounded-full text-blue-700 font-medium shadow-md">
+            <div
+              className={`absolute bottom-3 left-3 px-3 py-1 rounded-full font-medium shadow-md
+                ${isDark ? "bg-gray-700 text-blue-400" : "bg-white/80 text-blue-700"}`}
+            >
               {images[2].label}
             </div>
           </motion.div>
@@ -114,7 +127,10 @@ const LastSection = () => {
               alt={images[3].label}
               className="w-full h-64 object-cover group-hover:scale-105 transition duration-300"
             />
-            <div className="absolute bottom-3 left-3 bg-white/80 text-sm px-3 py-1 rounded-full text-blue-700 font-medium shadow-md">
+            <div
+              className={`absolute bottom-3 left-3 px-3 py-1 rounded-full font-medium shadow-md
+                ${isDark ? "bg-gray-700 text-blue-400" : "bg-white/80 text-blue-700"}`}
+            >
               {images[3].label}
             </div>
           </motion.div>

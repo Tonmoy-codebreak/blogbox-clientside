@@ -6,7 +6,7 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 import useAxios from "../hooks/useAxios";
 import { FaChevronDown, FaChevronUp, FaEye } from "react-icons/fa";
 
@@ -14,6 +14,7 @@ const columnHelper = createColumnHelper();
 
 const FeaturedBlogs = () => {
   const axiosSecure = useAxios();
+  const { isDark } = useOutletContext(); // ✅ Dark mode flag
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState([]);
@@ -65,7 +66,7 @@ const FeaturedBlogs = () => {
         cell: ({ getValue }) => (
           <Link
             to={`/blog/${getValue()}`}
-            className="text-blue-600 hover:text-blue-800 text-lg"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-lg"
             title="View Blog"
           >
             <FaEye />
@@ -87,7 +88,7 @@ const FeaturedBlogs = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 font-main">
-      <h1 className="text-4xl font-bold text-center text-blue-700 mb-12">
+      <h1 className="text-4xl font-bold text-center mb-12 text-blue-700 ">
         Featured Blogs
       </h1>
 
@@ -96,16 +97,18 @@ const FeaturedBlogs = () => {
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
-        <div className="overflow-x-auto shadow rounded-2xl border border-gray-200">
-          <table className="min-w-full bg-white divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className={`overflow-x-auto shadow rounded-2xl border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-white"}`}>
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className={`${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       onClick={header.column.getToggleSortingHandler()}
-                      className={`px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 select-none ${
+                      className={`px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold select-none ${
+                        isDark ? "text-gray-300" : "text-gray-700"
+                      } ${
                         header.column.columnDef.enableSorting === false
                           ? "cursor-default"
                           : "cursor-pointer"
@@ -127,18 +130,22 @@ const FeaturedBlogs = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-blue-50 transition duration-200 ease-in-out"
+                  className={`transition duration-200 ease-in-out ${
+                    isDark ? "hover:bg-gray-800" : "hover:bg-blue-50"
+                  }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className={`px-4 sm:px-6 py-3 text-xs sm:text-sm text-gray-700 ${
-                        cell.column.id === "_id" ? "text-center" : ""
-                      } ${cell.column.columnDef.meta?.className || ""}`}
+                      className={`px-4 sm:px-6 py-3 text-xs sm:text-sm ${
+                        isDark ? "text-gray-200" : "text-gray-700"
+                      } ${cell.column.id === "_id" ? "text-center" : ""} ${
+                        cell.column.columnDef.meta?.className || ""
+                      }`}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

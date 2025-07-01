@@ -1,43 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useOutletContext } from "react-router";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-
 import { useAuth } from "../Auth/useAuth";
 import Swal from "sweetalert2";
 import useAxios from "../hooks/useAxios";
 
 const AllBlogs = () => {
+  const { isDark } = useOutletContext();
   const [blogs, setBlogs] = useState([]);
+  const [originalBlogs, setOriginalBlogs] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [category, setCategory] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const axiosSecure = useAxios();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        if (search || category) {
-          setIsSearching(true);
-        } else {
-          setLoading(true);
-        }
+        if (search || category) setIsSearching(true);
+        else setLoading(true);
 
         const query = new URLSearchParams();
         if (search) query.append("search", search);
         if (category) query.append("category", category);
 
         const res = await axiosSecure.get(`/allblog?${query.toString()}`);
-        setBlogs(res.data);
+        const blogData = res.data;
+
+        setBlogs(blogData);
+        setOriginalBlogs(blogData);
 
         if (user?.email) {
-          const wishRes = await axiosSecure.get(
-            `/user/wishlist?email=${user.email}`
-          );
+          const wishRes = await axiosSecure.get(`/user/wishlist?email=${user.email}`);
           setWishlist(wishRes.data?.wishlist || []);
         }
 
@@ -53,6 +53,18 @@ const AllBlogs = () => {
     fetchBlogs();
   }, [search, category, axiosSecure, user?.email]);
 
+  useEffect(() => {
+    if (!sortBy) return setBlogs(originalBlogs);
+
+    const sorted = [...blogs];
+    if (sortBy === "title-asc") sorted.sort((a, b) => a.title.localeCompare(b.title));
+    else if (sortBy === "title-desc") sorted.sort((a, b) => b.title.localeCompare(a.title));
+    else if (sortBy === "newest") sorted.sort((a, b) => new Date(b.createdAt || b._id) - new Date(a.createdAt || a._id));
+    else if (sortBy === "oldest") sorted.sort((a, b) => new Date(a.createdAt || a._id) - new Date(b.createdAt || b._id));
+
+    setBlogs(sorted);
+  }, [sortBy]);
+
   const handleWishlist = async (blogId) => {
     if (!user) return navigate("/auth/login");
 
@@ -66,21 +78,19 @@ const AllBlogs = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16 font-main">
-      <h1 className="text-4xl font-bold font-title text-center text-blue-600 mb-10">
-        All Blogs
-      </h1>
+    <div className={`max-w-7xl mx-auto px-4 py-16 font-main transition-colors duration-300 ${isDark ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+      <h1 className="text-4xl font-bold font-title text-center text-blue-600 mb-10">All Blogs</h1>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-10">
-        {/* Search input and button */}
-        <div className="flex w-full sm:w-2/3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        {/* Search */}
+        <div className="flex gap-2">
           <input
             type="text"
             placeholder="Search by title..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full px-4 py-2 border-gray-200 border-2 rounded-md focus:ring-2 focus:ring-blue-600"
+            className={`w-full px-4 py-2 rounded-md border-2 focus:ring-2 ${isDark ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-400" : "border-gray-200 focus:ring-blue-600"}`}
           />
           <button
             onClick={() => setSearch(searchInput)}
@@ -90,11 +100,11 @@ const AllBlogs = () => {
           </button>
         </div>
 
-        {/* Category filter */}
+        {/* Category */}
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full sm:w-1/3 px-4 py-2 border-gray-200 border-2 rounded-md focus:ring-2 focus:ring-blue-600"
+          className={`w-full px-4 py-2 rounded-md border-2 focus:ring-2 ${isDark ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-400" : "border-gray-200 focus:ring-blue-600"}`}
         >
           <option value="">All Categories</option>
           <option value="technology">Technology</option>
@@ -103,6 +113,19 @@ const AllBlogs = () => {
           <option value="health">Health</option>
           <option value="education">Education</option>
           <option value="business">Business</option>
+        </select>
+
+        {/* Sort */}
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className={`w-full px-4 py-2 rounded-md border-2 focus:ring-2 ${isDark ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-400" : "border-gray-200 focus:ring-blue-600"}`}
+        >
+          <option value="">Sort By</option>
+          <option value="title-asc">Title A–Z</option>
+          <option value="title-desc">Title Z–A</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
         </select>
       </div>
 
@@ -113,7 +136,7 @@ const AllBlogs = () => {
         </div>
       )}
 
-      {/* Loader or Blog List */}
+      {/* Blog List or Loader */}
       {loading ? (
         <div className="text-center py-20">
           <span className="loading loading-dots loading-xl"></span>
@@ -125,7 +148,7 @@ const AllBlogs = () => {
             return (
               <div
                 key={blog._id}
-                className="bg-white rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col"
+                className={`rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col ${isDark ? "bg-gray-800" : "bg-white"}`}
               >
                 <div className="h-52 overflow-hidden">
                   <img
@@ -138,13 +161,13 @@ const AllBlogs = () => {
                   <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full w-fit mb-2">
                     {blog.category}
                   </span>
-                  <h2 className="text-xl font-semibold text-gray-800 mb-1">
+                  <h2 className={`text-xl font-semibold mb-1 ${isDark ? "text-white" : "text-gray-800"}`}>
                     {blog.title}
                   </h2>
-                  <p className="text-sm text-gray-600 flex-grow">
+                  <p className={`text-sm flex-grow ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                     {blog.shortDesc}
                   </p>
-                  <p className="text-xs text-gray-400 mt-2">By {blog.name}</p>
+                  <p className={`text-xs mt-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>By {blog.name}</p>
                   <div className="mt-4 flex justify-between items-center">
                     <Link
                       to={`/blog/${blog._id}`}

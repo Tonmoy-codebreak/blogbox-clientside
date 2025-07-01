@@ -4,7 +4,7 @@ import { PiBookOpenText } from "react-icons/pi";
 import { BiAward, BiTargetLock } from "react-icons/bi";
 import { GiLightBulb } from "react-icons/gi";
 
-const BecomeCreator = () => {
+const BecomeCreator = ({ isDark }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const faqs = [
@@ -35,9 +35,17 @@ const BecomeCreator = () => {
   ];
 
   return (
-    <section className="bg-gray-50 py-24 px-6 md:px-12 font-inter">
+    <section
+      className={`py-24 px-6 md:px-12 font-inter transition-colors duration-300
+        ${isDark ? "bg-gray-900 text-gray-200" : "bg-gray-50 text-gray-900"}
+      `}
+    >
       {/* Title */}
-      <h2 className="text-4xl md:text-5xl font-bold font-title text-center text-blue-600 mb-16">
+      <h2
+        className={`text-4xl md:text-5xl font-bold font-title text-center mb-16 ${
+          isDark ? "text-blue-400" : "text-blue-600"
+        }`}
+      >
         Frequently Asked Questions
       </h2>
 
@@ -73,6 +81,8 @@ const BecomeCreator = () => {
                 className={`py-3 px-4 text-sm sm:text-base font-semibold transition-all duration-300 rounded-xl focus:outline-none ${
                   activeTab === index
                     ? "bg-blue-600 text-white shadow-md scale-105"
+                    : isDark
+                    ? "bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700"
                     : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-100"
                 }`}
               >
@@ -82,7 +92,14 @@ const BecomeCreator = () => {
           </div>
 
           {/* Accordion Answer */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden min-h-[200px]">
+          <div
+            className={`rounded-2xl shadow-md border overflow-hidden min-h-[200px] transition-colors duration-300
+              ${
+                isDark
+                  ? "bg-gray-800 border-gray-700 text-gray-300"
+                  : "bg-white border-gray-100 text-gray-900"
+              }`}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -92,13 +109,11 @@ const BecomeCreator = () => {
                 transition={{ duration: 0.4 }}
                 className="p-6"
               >
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h3 className="text-2xl font-semibold mb-3 flex items-center gap-2">
                   {faqs[activeTab].icon}
                   {faqs[activeTab].question}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-base">
-                  {faqs[activeTab].answer}
-                </p>
+                <p className="leading-relaxed text-base">{faqs[activeTab].answer}</p>
               </motion.div>
             </AnimatePresence>
           </div>

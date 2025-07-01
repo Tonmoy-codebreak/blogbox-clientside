@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams, useOutletContext } from "react-router";
 import useAxios from "../hooks/useAxios";
 import { useAuth } from "../Auth/useAuth";
 import Comment from "../Components/BlogDetailsPage/Comment";
@@ -10,12 +10,13 @@ const BlogDetails = () => {
   const { id } = useParams();
   const axiosSecure = useAxios();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { isDark } = useOutletContext(); // ✅ Get dark mode context
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const [wishlist, setWishlist] = useState([]);
 
-  // Fetch blog by ID//////////////////////////////
+  // Fetch blog
   useEffect(() => {
     axiosSecure
       .get(`/blogs/${id}`)
@@ -26,7 +27,7 @@ const BlogDetails = () => {
       .catch(() => setLoading(false));
   }, [axiosSecure, id]);
 
-  // Fetch user's wishlist////////////////////
+  // Fetch wishlist
   useEffect(() => {
     if (user?.email) {
       axiosSecure
@@ -40,21 +41,15 @@ const BlogDetails = () => {
     }
   }, [axiosSecure, user?.email]);
 
- 
   const isWishlisted = wishlist.includes(id);
 
   const handleWishlist = async (blogId) => {
-    if (!user) {
-      return navigate("/auth/login");
-    }
+    if (!user) return navigate("/auth/login");
 
     try {
       await axiosSecure.patch(`/user/wishlist/${user.email}`, { blogId });
       setWishlist((prev) => [...prev, blogId]);
-      Swal.fire({
-        title: "Added to Wishlist",
-        icon: "success",
-      });
+      Swal.fire("Added to Wishlist", "", "success");
     } catch (err) {
       console.error("Failed to add to wishlist", err);
       Swal.fire("Error", "Could not add to wishlist", "error");
@@ -76,14 +71,14 @@ const BlogDetails = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 font-main">
-      {/* Blog Content */}
+    <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 font-main transition-colors duration-300 ${isDark ? "text-white" : "text-gray-800"}`}>
+      {/* Blog Header */}
       <div>
-        <h1 className="text-4xl sm:text-5xl font-bold text-blue-700 mb-6 leading-tight">
+        <h1 className={`text-4xl sm:text-5xl font-bold mb-6 leading-tight text-blue-500`}>
           {blog.title}
         </h1>
 
-        <div className="flex flex-wrap justify-between items-center text-sm text-gray-500 mb-4">
+        <div className={`flex flex-wrap justify-between items-center text-sm mb-4 ${isDark ? "text-gray-300" : "text-gray-500"}`}>
           <p>
             By: <strong>{blog.name}</strong>
           </p>
@@ -91,11 +86,11 @@ const BlogDetails = () => {
           <button
             onClick={() => handleWishlist(blog._id)}
             disabled={isWishlisted}
-            className={`md:text-xl cursor-pointer font-semibold flex items-center gap-2 ${
+            className={`md:text-xl font-semibold flex items-center gap-2 transition ${
               isWishlisted
                 ? "text-gray-400 cursor-not-allowed"
                 : "text-red-500 hover:text-red-600"
-            } transition`}
+            }`}
           >
             {isWishlisted ? (
               <>
@@ -115,18 +110,20 @@ const BlogDetails = () => {
           className="w-full h-[400px] object-cover rounded-xl shadow-md mb-6"
         />
 
-        <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-6">
+        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-6 ${isDark ? "bg-gray-700 text-yellow-300" : "bg-blue-100 text-blue-700"}`}>
           {blog.category}
         </span>
 
-        <p className="text-lg text-gray-700 italic mb-8">{blog.shortDesc}</p>
+        <p className={`text-lg italic mb-8 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+          {blog.shortDesc}
+        </p>
 
-        <article className="text-gray-800 text-[17px] leading-8 whitespace-pre-line">
+        <article className={`leading-8 whitespace-pre-line text-[17px] ${isDark ? "text-gray-200" : "text-gray-800"}`}>
           {blog.longDesc}
         </article>
       </div>
 
-      {/* Comment Section */}
+      {/* Comments */}
       <Comment
         blogId={blog._id}
         currentUser={user}

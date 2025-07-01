@@ -6,15 +6,14 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { useAuth } from "../../Auth/useAuth";
 import Swal from "sweetalert2";
 
-const RecentBlogs = () => {
+const RecentBlogs = ({ isDark }) => {
   const axiosSecure = useAxios();
   const [blogs, setBlogs] = useState([]);
-  const [wishlist, setWishlist] = useState([]); 
+  const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  //  axiosssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +37,6 @@ const RecentBlogs = () => {
     fetchData();
   }, [axiosSecure, user?.email]);
 
-  // Onlclickkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
   const handleWishlist = async (blogId) => {
     if (!user) {
       return navigate("/auth/login");
@@ -50,14 +48,11 @@ const RecentBlogs = () => {
       Swal.fire({
         title: "Added to Wishlist",
         icon: "success",
-        
       });
     } catch (err) {
       console.error("Failed to add to wishlist", err);
     }
   };
-
-  // ------------------------------------------------
 
   if (loading) {
     return (
@@ -67,10 +62,24 @@ const RecentBlogs = () => {
     );
   }
 
+  // Conditional classes for background and text
+  const bgColor = isDark ? "bg-gray-900" : "bg-gray-50";
+  const textTitle = isDark ? "text-white" : "text-gray-800";
+  const textDesc = isDark ? "text-gray-300" : "text-gray-600";
+  const cardBg = isDark ? "bg-gray-800" : "bg-white";
+  const btnWishlisted = isDark
+    ? "text-gray-400 cursor-not-allowed"
+    : "text-gray-400 cursor-not-allowed";
+  const btnWishlist = isDark
+    ? "text-red-400 hover:text-red-500"
+    : "text-red-500 hover:text-red-600";
+
   return (
-    <div className="bg-gray-50 py-16">
+    <div className={`${bgColor} py-16 min-h-screen transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-center text-4xl sm:text-5xl font-semibold text-blue-600 font-title mb-14 lg:pt-20">
+        <h1
+          className={`text-center text-4xl sm:text-5xl font-semibold text-blue-600 font-title mb-14 lg:pt-20`}
+        >
           Recent Blogs
         </h1>
 
@@ -81,7 +90,7 @@ const RecentBlogs = () => {
             return (
               <div
                 key={blog._id}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+                className={`${cardBg} rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col`}
               >
                 <div className="h-52 overflow-hidden">
                   <img
@@ -90,11 +99,11 @@ const RecentBlogs = () => {
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <div className="p-6 flex flex-col flex-grow font-main">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                <div className={`p-6 flex flex-col flex-grow font-main`}>
+                  <h2 className={`text-xl font-semibold mb-2 ${textTitle}`}>
                     {blog.title}
                   </h2>
-                  <p className="text-sm text-gray-600 flex-grow hidden md:block">
+                  <p className={`${textDesc} flex-grow hidden md:block text-sm`}>
                     {blog.shortDesc}
                   </p>
 
@@ -111,11 +120,9 @@ const RecentBlogs = () => {
                     <button
                       onClick={() => handleWishlist(blog._id)}
                       disabled={isWishlisted}
-                      className={`text-sm font-semibold flex items-center gap-2 ${
-                        isWishlisted
-                          ? "text-gray-400 cursor-not-allowed"
-                          : "text-red-500 hover:text-red-600"
-                      } transition`}
+                      className={`text-sm font-semibold flex items-center gap-2 transition ${
+                        isWishlisted ? btnWishlisted : btnWishlist
+                      }`}
                     >
                       {isWishlisted ? (
                         <>
