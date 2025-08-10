@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useAuth } from "../../Auth/useAuth";
 import Swal from "sweetalert2";
+import { GoArrowUpRight } from "react-icons/go";
 
 const RecentBlogs = ({ isDark }) => {
   const axiosSecure = useAxios();
@@ -113,7 +114,7 @@ const RecentBlogs = ({ isDark }) => {
                       to={`/blog/${blog._id}`}
                     >
                       <span className="flex items-center gap-1">
-                        Details <FaArrowRightLong />
+                        Details <GoArrowUpRight />
                       </span>
                     </Link>
 
