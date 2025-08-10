@@ -74,7 +74,7 @@ const BlogDetails = () => {
     <div className={`max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 font-main transition-colors duration-300 ${isDark ? "text-white" : "text-gray-800"}`}>
       {/* Blog Header */}
       <div>
-        <h1 className={`text-4xl sm:text-5xl font-bold mb-6 leading-tight text-blue-500`}>
+        <h1 className={`text-4xl font-bold mb-6 leading-tight text-blue-500`}>
           {blog.title}
         </h1>
 
