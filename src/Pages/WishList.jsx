@@ -64,7 +64,7 @@ const WishList = () => {
 
       {wishlistedBlogs.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 text-lg font-main">
-          No blogs in your wishlist.
+          No blogs in your wishlist. Add some.
         </p>
       ) : (
         <div className="space-y-10">
