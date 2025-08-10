@@ -26,6 +26,24 @@ The goal is to build a modern, user-interactive platform for content creators an
 
 ---
 
+## Frontend Technologies
+
+- **React** – JavaScript library for building user interfaces  
+- **Vite** – Fast build tool and development server  
+- **Tailwind CSS** – Utility-first CSS framework  
+- **DaisyUI** – Tailwind CSS component library  
+- **React Router** – Client-side routing  
+- **Axios** – HTTP client for API requests  
+- **Firebase** – Backend services (auth, database, hosting)  
+- **Framer Motion** – Animation library for React  
+- **React Icons** – Icon components for React  
+- **React Masonry CSS** – Responsive masonry grid layout  
+- **React Tooltip** – Tooltips for UI elements  
+- **SweetAlert2** – Beautiful alert/dialog popups  
+- **ESLint** – JavaScript and React linting tool  
+
+
+
 ## 🛠️ NPM Packages Used
 
 ### 📦 Dependencies (Runtime)
