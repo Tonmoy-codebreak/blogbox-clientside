@@ -92,7 +92,7 @@ const WishList = () => {
                   <span className="text-xs bg-blue-100 text-blue-700 font-medium rounded-full px-3 py-1 inline-block mb-3">
                     {blog.category}
                   </span>
-                  <h2 className="text-2xl font-semibold text-blue-700 mb-2">
+                  <h2 className="text-xl font-semibold text-blue-700 mb-2">
                     {blog.title}
                   </h2>
                   <p className="text-sm text-blue-500  leading-relaxed line-clamp-3">
