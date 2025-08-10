@@ -32,7 +32,7 @@ const LastSection = ({ isDark }) => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
         viewport={{ once: true }}
-        className={`text-4xl md:text-5xl font-bold text-center mb-12 ${
+        className={`text-4xl py-10 md:text-5xl font-bold text-center mb-12 ${
           isDark ? "text-blue-400" : "text-blue-600"
         }`}
       >
